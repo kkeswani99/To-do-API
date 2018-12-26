@@ -40,7 +40,7 @@ app.get('/todos/:id',(req,res) => {
 	//Validating whether id entered by user is valid or not
 	if(!ObjectID.isValid(id))
 	{
-		console.log("ID entered by user is invalid");
+		//console.log("ID entered by user is invalid");
 		return res.status(404).send();
 	}
 	else
