@@ -1,14 +1,15 @@
 require('./config/config');
 
 //Library Imports
-const _        = require('lodash');
-var express    = require('express');
-var bodyParser = require('body-parser');
-const {ObjectID} = require('mongodb');
+const _            = require('lodash');
+var express        = require('express');
+var bodyParser     = require('body-parser');
+const {ObjectID}   = require('mongodb');
 //Local Imports
-var {mongoose} = require('./db/mongoose');
-var {Todo}     = require('./models/todo');
-var {Users}    = require('./models/users'); 
+var {mongoose}     = require('./db/mongoose');
+var {Todo}         = require('./models/todo');
+var {Users}        = require('./models/users'); 
+var {authenticate} = require('./middleware/authenticate');
 
 var app = express();
 const port = process.env.PORT || 3000;
@@ -123,6 +124,25 @@ app.post('/users',(req,res) => {
 	}).catch((e) => {
 		res.status(400).send(e);
 	});
+});
+
+var authenticate = (req,res,next) => {
+	var token = req.header('x-auth');
+
+	Users.findByToken(token).then((user) => {
+		if(!user) {
+			return Promise.reject();
+		}
+		req.user  = user;
+		req.token = token;
+		next();
+	}).catch((e) => {
+		res.status(401).send();
+	});
+};
+
+app.get('/users/me', authenticate, (req,res) => {
+	res.send(req.user);
 });
 
 app.listen(port, () => {
