@@ -5,6 +5,8 @@ const _            = require('lodash');
 var express        = require('express');
 var bodyParser     = require('body-parser');
 const {ObjectID}   = require('mongodb');
+const bcrypt  = require('bcryptjs');
+
 //Local Imports
 var {mongoose}     = require('./db/mongoose');
 var {Todo}         = require('./models/todo');
@@ -143,6 +145,39 @@ var authenticate = (req,res,next) => {
 
 app.get('/users/me', authenticate, (req,res) => {
 	res.send(req.user);
+});
+
+app.post('/users/login', (req,res) => {
+	var body = _.pick(req.body, ['email', 'password']);
+	Users.findByCredentials(body.email, body.password).then((user) => {
+		return user.generateAuthToken().then((token) => {
+			res.header('x-auth', token).send(user);
+		});
+	}).catch((e) => {
+		res.status(400).send();
+	});
+
+
+
+
+
+
+
+
+
+
+	// Users.findOne({email}).then((user) => {
+	// 	bcrypt.compare(password, user.password, (err,res) => {
+	// 	if(res)
+	// 	{
+	// 		res.status(200).send();
+	// 	}
+	// 	else
+	// 	{
+	// 		res.status(400).send();	
+	// 	}
+	// });
+	// }).catch((e) => res.send(e));
 });
 
 app.listen(port, () => {
