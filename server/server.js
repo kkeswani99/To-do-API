@@ -156,28 +156,6 @@ app.post('/users/login', (req,res) => {
 	}).catch((e) => {
 		res.status(400).send();
 	});
-
-
-
-
-
-
-
-
-
-
-	// Users.findOne({email}).then((user) => {
-	// 	bcrypt.compare(password, user.password, (err,res) => {
-	// 	if(res)
-	// 	{
-	// 		res.status(200).send();
-	// 	}
-	// 	else
-	// 	{
-	// 		res.status(400).send();	
-	// 	}
-	// });
-	// }).catch((e) => res.send(e));
 });
 
 app.listen(port, () => {
