@@ -11,8 +11,8 @@ var {Todo}         = require('./models/todo');
 var {Users}        = require('./models/users'); 
 var {authenticate} = require('./middleware/authenticate');
 
-var app = express();
-const port = process.env.PORT || 3000;
+var app            = express();
+const port         = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
 
@@ -72,7 +72,7 @@ app.delete('/todos/:id', (req,res) => {
 	{
 		return res.status(404).send();
 	}
-	Todo.findByIdAndRemove(id).then((todo) => {
+	Todo.findOneAndDelete({_id: id}).then((todo) => {
 		if(!todo)
 		{
 			return res.status(404).send();
@@ -100,7 +100,7 @@ app.patch('/todos/:id', (req,res) => {
 		body.completedAt = null;
 	}
 
-	Todo.findByIdAndUpdate(id, {$set: body}, {new: true}).then((todo) => {
+	Todo.findByIdAndUpdate({_id:id}, {$set: body}, {new: true}).then((todo) => {
 		if(!todo)
 		{
 			return res.status(404).send();
